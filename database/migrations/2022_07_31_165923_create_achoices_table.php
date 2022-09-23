@@ -16,7 +16,7 @@ class CreateAchoicesTable extends Migration
         Schema::create('achoices', function (Blueprint $table) {
             $table->id();
             $table->string('text');
-            $table->unsignedBigInteger('q_id');
+            $table->uuid('q_id')->nullable(false);
             $table->timestamps();
             $table->foreign('q_id')->references('id')->on('questions')
             ->onDelete('cascade')->onUpdate('cascade');

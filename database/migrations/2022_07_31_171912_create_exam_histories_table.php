@@ -16,7 +16,7 @@ class CreateExamHistoriesTable extends Migration
         Schema::create('exam_histories', function (Blueprint $table) {
             $table->id();
             $table->string('question');
-            $table->unsignedBigInteger('qs_id');
+            $table->uuid('qs_id')->nullable(false);
             $table->unsignedBigInteger('student_id');
             $table->timestamps();
             $table->foreign('qs_id')->references('id')->on('question_sheets')

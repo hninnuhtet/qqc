@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\QuestionSheet;
+use App\Models\Student;
 
 class ExamHistory extends Model
 {

@@ -3,13 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\UuidTrait;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use App\Models\QuestionSheet;
+use App\Models\Achoice;
+use App\Models\Bchoice;
+use App\Models\Cchoice;
+use App\Models\Dchoice;
+use App\Models\Answer;
+use App\Models\StudentAnswer;
 
 class Question extends Model
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable, UuidTrait;
 
-    protected $fillable = ['question', 'qs_id'];
+    protected $fillable = ['id', 'question', 'qs_id'];
 
     public function question_sheet(){
         return $this->belongsTo(QuestionSheet::class);
@@ -33,5 +44,9 @@ class Question extends Model
 
     public function answer(){
         return $this->hasMany(Answer::class);
+    }
+
+    public function student_answer(){
+        return $this->belongsTo(StudentAnswer::class);
     }
 }

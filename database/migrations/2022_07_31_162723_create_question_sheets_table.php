@@ -14,12 +14,11 @@ class CreateQuestionSheetsTable extends Migration
     public function up()
     {
         Schema::create('question_sheets', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('code');
-            $table->string('titel');
+            $table->string('title');
             $table->string('description');
             $table->string('status');
-            $table->string('password');
             $table->string('created_by');
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\StudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,29 @@ Route::post('/login', [LoginController::class,'login']);
 Route::get('/register', [RegisterController::class,'showRegistrationForm'])->name('register');
 Route::post('/register',  [RegisterController::class,'register']);
 
+//Question
+Route::group(['middleware' => ['auth'], 'prefix' => '/admin/questions', 'as' => 'admin.questions.'], function () {
+    Route::get('/',[QuestionController::class, 'index'])->name('index');
+    Route::get('/create', [QuestionController::class, 'create'])->name('create');
+    Route::post('/store', [QuestionController::class, 'store'])->name('store');
+    Route::get('/{id}/show', [QuestionController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [QuestionController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [QuestionController::class, 'update'])->name('update');
+    Route::get('/{id}/delete', [QuestionController::class, 'destroy'])->name('delete');
+    Route::delete('{qs_id}/{id}/deletequestion', [QuestionController::class, 'deletequestion'])->name('deletequestion');       
+    Route::get('/changeStatus', [QuestionController::class, 'changeStatus'])->name('changeStatus');
+});
 
-Route::get('/',[QuestionController::class, 'index'])->name('index')->middleware('auth');
-Route::get('/create', [QuestionController::class, 'create'])->name('create');
-Route::post('/store', [QuestionController::class, 'store'])->name('store');
+//Students
+Route::group(['middleware' => ['auth'], 'prefix' => '/admin/students', 'as' => 'admin.students.'], function () {
+    Route::get('/',[StudentController::class, 'index'])->name('index');
+    Route::get('/create', [StudentController::class, 'create'])->name('create');
+    Route::post('/store', [StudentController::class, 'store'])->name('store');
+    Route::get('/{id}/show', [StudentController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [StudentController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [StudentController::class, 'update'])->name('update');
+    Route::get('/{id}/delete', [StudentController::class, 'destroy'])->name('delete');   
+});
+
+//
+Route::get('/question/{qs_id}', [QuestionController::class, 'getQuestionForStudents'])->name('question.getQuestionForStudents');
