@@ -11,7 +11,7 @@ class ExamHistory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['qs_id', 'student_id'];
+    protected $fillable = ['question', 'qs_id', 'student_id'];
 
     public function student(){
         return $this->belongsTo(Student::class);

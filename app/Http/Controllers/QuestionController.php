@@ -11,6 +11,10 @@ use App\Models\Bchoice;
 use App\Models\Cchoice;
 use App\Models\Dchoice;
 use App\Models\Answer;
+use App\Models\StudentAnswer;
+use App\Models\Student;
+use App\Models\ExamHistory;
+
 
 class QuestionController extends Controller
 {
@@ -216,18 +220,43 @@ class QuestionController extends Controller
         return response()->json(['success'=>'Status change successfully.']);
      }
 
-    public function getQuestionForStudents($qs_id){
-        $sheet = QuestionSheet::find($qs_id);
-        $question = Question::where('qs_id', $qs_id)->get();
-        $answer = array();
-        foreach($question as $key=>$value){
-            $a[] = Achoice::where('q_id', $question[$key]->id)->get();
-            $b[] = Bchoice::where('q_id', $question[$key]->id)->get();
-            $c[] = Cchoice::where('q_id', $question[$key]->id)->get();
-            $d[] = Dchoice::where('q_id', $question[$key]->id)->get();
-            $answer[] = Answer::where('q_id', $question[$key]->id)->get();
-        }  
-        return view('question', ['sheet'=>$sheet, 'question'=>$question, 'a'=>$a, 'b'=>$b, 'c'=>$c, 'd'=>$d, 'answer'=>$answer]);
-    
+    public function showQuestionLogin(Request $request){
+        $qs_id = last($request->segments());
+        return view('students.login', ['qs_id'=>$qs_id]);
+    }
+
+    public function handleAnswers(Request $request, $qs_id){
+        $studentID = Student::where('email', $request->email)->where('password', $request->accessCode)->first('id')->id;
+        $alreadyTook = ExamHistory::where('student_id', $studentID)->exists();
+
+        if(!$alreadyTook){
+            $questionIDs = Question::where('qs_id',$qs_id)->get('id');
+
+            foreach($questionIDs as $each){
+                $answer = $request[$each->id];
+                $questionExisted = StudentAnswer::where('q_id', $each->id)->exists();
+                if(!$questionExisted){
+                    StudentAnswer::create([
+                        'student_id'=> $studentID,
+                        'q_id'=> $each->id,
+                        'answer'=> $answer
+                    ]);
+                }else{
+                    return abort(404);
+                }
+            }
+
+            $questionSheetTitle = QuestionSheet::findOrFail($qs_id)->title;
+            // dd($questionSheetTitle);
+
+            ExamHistory::create([
+                'question'=> $questionSheetTitle,
+                'qs_id'=> $qs_id,
+                'student_id'=> $studentID
+            ]);
+        }else{
+            return view('students.login', ['qs_id'=>$qs_id])->with('errorMessage', 'You Already took this exam!');
+        }
+        return view('students.login', ['qs_id'=>$qs_id])->with('successMessage', 'Success!');
     }
 }

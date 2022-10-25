@@ -31,6 +31,7 @@
                         <th>#</th>
                         <th>Full Name</th>
                         <th>Email</th>
+                        <th>AccessCode</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -40,6 +41,7 @@
                             <th>#</th>
                             <th>Full Name</th>
                             <th>Email</th>
+                            <th>AccessCode</th>
                             <th>Action</th>
                         </tr>
                     </tr>
@@ -51,6 +53,7 @@
                                 <td>{{$loop->iteration}}</td>                                    
                                 <td>{{$item->name}}</td>
                                 <td>{{$item->email}}</td>
+                                <td>{{$item->password}}</td>
                                 <td>
                                     <a href="{{route('admin.students.show', ['id' => $item->id])}}" class="btn btn-info btn-sm"><i class="fa fa-eye"></i></a>
                                     <a href="{{route('admin.students.edit', ['id' => $item->id])}}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>

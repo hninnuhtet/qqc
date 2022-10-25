@@ -43,6 +43,11 @@
                                 <input type="text" name="email" class="form-control" value="{{$data->email}}">
                             </div>
 
+                            <div class="form-group">
+                                <label>AccessCode<span class="text-danger">*</span></label>
+                                <input type="text" name="password" class="form-control" value="{{$data->password}}">
+                            </div>
+
                             <button type="submit" class="btn btn-primary">Update</button>
                             <a href="{{route('admin.students.index')}}" class="btn btn-danger m-3">Cancel</a>
                     </div>

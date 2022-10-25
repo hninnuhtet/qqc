@@ -85,7 +85,6 @@
       $('.toggle-class').change(function() {
           var status = $(this).prop('checked') == true ? 1 : 0; 
           var qs_id = $(this).data('id'); 
-           
           $.ajax({
               type: "GET",
               dataType: "json",
@@ -105,7 +104,7 @@
                     "newestOnTop": false,
                     "progressBar": false,
                     "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
+                    "preventDuplicates": true,
                     "onclick": null,
                     "showDuration": "300",
                     "hideDuration": "1000",

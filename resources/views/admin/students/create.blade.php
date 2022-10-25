@@ -43,8 +43,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Password<span class="text-danger">*</span></label>
-                                <input type="password" name="password" class="form-control">
+                                <label>AccessCode<span class="text-danger">*</span></label>
+                                <input type="text" name="password" class="form-control" value="{{ $accessCode }}" readonly>
                             </div>
 
                             <button type="submit" class="btn btn-primary">Submit</button>

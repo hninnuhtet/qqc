@@ -4,6 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\QuestionSheet;
+use App\Models\Question;
+use App\Models\Achoice;
+use App\Models\Bchoice;
+use App\Models\Cchoice;
+use App\Models\Dchoice;
+use App\Models\ExamHistory;
+
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -26,7 +35,9 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view ('admin.students.create');
+        $accessCode = $this->generateRandomCode(10);
+
+        return view ('admin.students.create', ['accessCode' => $accessCode]);
     }
 
     /**
@@ -46,7 +57,7 @@ class StudentController extends Controller
         Student::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => sha1($request->password),
+            'password' => $request->password,
         ]);
 
         return redirect()->route('admin.students.create')->with('success', 'Data has been added.');
@@ -88,11 +99,13 @@ class StudentController extends Controller
         $request->validate([
             'name'=>'required',
             'email'=>'required|email',
+            'password'=>'required',
         ]);
 
         Student::where('id', $id)->update([
             'name' => $request->name,
             'email' => $request->email,
+            'password' => $request->password,
         ]);
 
         return redirect()->route('admin.students.index')->with('success', 'Data has been updated.');
@@ -109,5 +122,53 @@ class StudentController extends Controller
     {
         Student::where('id',$id)->delete();
         return redirect()->route('admin.students.index')->with('success', 'Data has been deleted.');   
+    }
+
+    private function generateRandomCode($length_of_string)
+    {
+        // String of all alphanumeric character
+        $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+     
+        // Shuffle the $str_result and returns substring
+        // of specified length
+        return substr(str_shuffle($str_result),0, $length_of_string);
+    }
+
+
+    public function validateAccessCode(Request $request, $qs_id){
+        $email = $request->email;
+        $accessCode = $request->password;
+        
+        $validStudent = Student::where('email', $email)->where('password', $accessCode)->exists();
+
+        if($validStudent){
+            $studentID = Student::where('email', $email)->where('password', $accessCode)->first('id')->id;
+
+            $alreadyTook = ExamHistory::where('student_id', $studentID)->exists();
+            if($alreadyTook){
+                return view('students.login', ['qs_id'=>$qs_id])->with('errorMessage', 'You Already took this exam!');
+            }
+
+            $sheet = QuestionSheet::find($qs_id);
+            $question = Question::where('qs_id', $qs_id)->get();
+            $answer = array();
+            foreach($question as $each){
+                $a[] = Achoice::where('q_id', $each->id)->get();
+                $b[] = Bchoice::where('q_id', $each->id)->get();
+                $c[] = Cchoice::where('q_id', $each->id)->get();
+                $d[] = Dchoice::where('q_id', $each->id)->get();
+            }
+            $data = [
+                'sheet'=>$sheet, 
+                'question'=>$question, 
+                'a'=>$a, 'b'=>$b, 'c'=>$c, 'd'=>$d, 
+                'email'=>$email,
+                'accessCode'=>$accessCode];
+
+            return view('students.question', $data);
+        }else{
+            return abort(403);
+        }
+
     }
 }

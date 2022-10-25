@@ -1,3 +1,18 @@
 #add_btn, #remove_btn{
     padding: 2px 10px 2px 10px;
 }
+.btn-default{
+    background-color: white;
+}
+a, 
+button:hover,
+button:focus,
+button:active, 
+button:active:focus:not(:disabled):not(.disabled),
+.btn:focus, 
+.btn:active, 
+.btn:hover,
+.btn:not(:disabled):not(.disabled):active{
+    box-shadow: none!important;
+    outline: 0;
+}

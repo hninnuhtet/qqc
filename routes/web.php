@@ -48,4 +48,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => '/admin/students', 'as' => '
 });
 
 //
-Route::get('/question/{qs_id}', [QuestionController::class, 'getQuestionForStudents'])->name('question.getQuestionForStudents');
+Route::get('/question/{qs_id}', [QuestionController::class, 'showQuestionLogin'])->name('question.showQuestionLogin')->middleware('validateQuestionSheetUrl');
+Route::post('/question/{qs_id}', [StudentController::class, 'validateAccessCode'])->name('question.validateAccessCode')->middleware('validateQuestionSheetUrl');
+Route::post('/question/handle_answers/{qs_id}', [QuestionController::class, 'handleAnswers'])->name('question.handleAnswers');
