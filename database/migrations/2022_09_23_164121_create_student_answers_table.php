@@ -17,7 +17,7 @@ class CreateStudentAnswersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->uuid('q_id')->nullable(false);
-            $table->string('answer');
+            $table->string('answer')->nullable();
             $table->timestamps();
             $table->foreign('q_id')->references('id')->on('questions')
             ->onDelete('cascade')->onUpdate('cascade');

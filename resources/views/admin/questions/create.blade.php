@@ -54,12 +54,19 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label>Allowed Time (Minute)</label>
+                                <input type="digit" class="form-control" style="display: inline; width: 70px" name="qs_min" placeholder="Min" Required>
+                                <input type="digit" class="form-control" style="display: inline; width: 70px" name="qs_sec" placeholder="Sec" Required>
+                            </div>
+                            <div class="form-group">
                                 <label>Created By</label>
                                 <input type="text" class="form-control" name="qs_created_by">
                                 <small>e.g. Tr.Hnin</small>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <a href="{{route('admin.questions.index')}}" class="btn btn-danger m-3">Cancel</a>
+                            
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                            <a href="{{route('admin.questions.index')}}" class="btn btn-danger m-3 btn-sm">Cancel</a>
+
                         </div>
                     </div>
                 </div>

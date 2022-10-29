@@ -18,8 +18,14 @@ class validateQuestionSheetUrl
     {
         $question_sheet_id = last($request->segments());
         $isValidated = QuestionSheet::where('id', $question_sheet_id)->exists();
+        
         if(!$isValidated){
-            return abort(403);
+            return abort(404);
+        }else {
+            $isEnabled = QuestionSheet::where('id', $question_sheet_id)->first()->status;
+            if(!$isEnabled ){
+                return abort(403);
+            }
         }
         return $next($request);
     }

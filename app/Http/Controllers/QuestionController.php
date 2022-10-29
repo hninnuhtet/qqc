@@ -14,6 +14,10 @@ use App\Models\Answer;
 use App\Models\StudentAnswer;
 use App\Models\Student;
 use App\Models\ExamHistory;
+use App\Exports\ResultsExport;
+use App\Mail\ExamResultMail;
+use Excel;
+use Mail;
 
 
 class QuestionController extends Controller
@@ -33,6 +37,8 @@ class QuestionController extends Controller
             'qs_description'=>'required', 
             'qs_status'=>'required', 
             'qs_created_by'=>'required', 
+            'qs_min'=>'required',
+            'qs_sec'=>'required',
             'questions' =>'required',
             'a_choice' =>'required',
             'b_choice' =>'required',
@@ -48,6 +54,7 @@ class QuestionController extends Controller
             'title' => $request->qs_title,
             'description' => $request->qs_description,
             'status' => $request->qs_status,
+            'allowed_time' => $request->qs_min .':'.$request->qs_sec,
             'created_by' => $request->qs_created_by,
         ]);
 
@@ -104,6 +111,7 @@ class QuestionController extends Controller
 
     public function edit($id){
         $sheet = QuestionSheet::find($id);
+        $allowed_time = explode(":",$sheet->allowed_time);
         $question = Question::where('qs_id', $id)->get();
         $answer = array();
         foreach($question as $key=>$value){
@@ -113,7 +121,7 @@ class QuestionController extends Controller
             $d[] = Dchoice::where('q_id', $question[$key]->id)->get();
             $answer[] = Answer::where('q_id', $question[$key]->id)->get();
         }  
-        return view('admin.questions.edit', ['sheet'=>$sheet, 'question'=>$question, 'a'=>$a, 'b'=>$b, 'c'=>$c, 'd'=>$d, 'answer'=>$answer]);
+        return view('admin.questions.edit', ['sheet'=>$sheet, 'allowed_time'=>$allowed_time, 'question'=>$question, 'a'=>$a, 'b'=>$b, 'c'=>$c, 'd'=>$d, 'answer'=>$answer]);
     }
 
     public function update($qs_id, Request $request){
@@ -121,6 +129,8 @@ class QuestionController extends Controller
             'qs_title'=>'required',            
             'qs_description'=>'required', 
             'qs_status'=>'required', 
+            'qs_min'=>'required',
+            'qs_sec'=>'required',
             'qs_created_by'=>'required', 
             'questions' =>'required',
             'a_choice' =>'required',
@@ -135,6 +145,7 @@ class QuestionController extends Controller
         $qsheet->title =$request->qs_title;
         $qsheet->description = $request->qs_description;
         $qsheet->status = $request->qs_status;
+        $qsheet->allowed_time = $request->qs_min .':'.$request->qs_sec;
         $qsheet->created_by = $request->qs_created_by;
         $qsheet->save();
         
@@ -218,7 +229,12 @@ class QuestionController extends Controller
         ]);
   
         return response()->json(['success'=>'Status change successfully.']);
-     }
+    }
+
+    public function result($id){
+        $result = ExamHistory::where('qs_id', $id)->get();
+        return view('admin.questions.result', ['result'=>$result, 'qs_id'=>$id]);
+    }
 
     public function showQuestionLogin(Request $request){
         $qs_id = last($request->segments());
@@ -227,14 +243,24 @@ class QuestionController extends Controller
 
     public function handleAnswers(Request $request, $qs_id){
         $studentID = Student::where('email', $request->email)->where('password', $request->accessCode)->first('id')->id;
-        $alreadyTook = ExamHistory::where('student_id', $studentID)->exists();
+        $alreadyTook = ExamHistory::where('student_id', $studentID)->where('qs_id', $qs_id)->exists();
 
         if(!$alreadyTook){
             $questionIDs = Question::where('qs_id',$qs_id)->get('id');
+            $full_mark = count($questionIDs);
+            $score = 0;
 
             foreach($questionIDs as $each){
+                                
                 $answer = $request[$each->id];
-                $questionExisted = StudentAnswer::where('q_id', $each->id)->exists();
+                $questionExisted = StudentAnswer::where('q_id', $each->id)->where('student_id', $studentID)->exists();
+
+                // Score calculation
+                $rightAnswer = Answer::where('q_id', $each->id)->first()->answer;                
+                if($rightAnswer == $answer){
+                    $score += 1;                    
+                }                
+                            
                 if(!$questionExisted){
                     StudentAnswer::create([
                         'student_id'=> $studentID,
@@ -243,20 +269,37 @@ class QuestionController extends Controller
                     ]);
                 }else{
                     return abort(404);
-                }
+                }                             
             }
 
-            $questionSheetTitle = QuestionSheet::findOrFail($qs_id)->title;
-            // dd($questionSheetTitle);
-
             ExamHistory::create([
-                'question'=> $questionSheetTitle,
+                'student_id'=> $studentID,
                 'qs_id'=> $qs_id,
-                'student_id'=> $studentID
+                'full_mark'=> $full_mark,
+                'score'=>$score
             ]);
         }else{
             return view('students.login', ['qs_id'=>$qs_id])->with('errorMessage', 'You Already took this exam!');
         }
         return view('students.login', ['qs_id'=>$qs_id])->with('successMessage', 'Success!');
+    }
+
+    public function examHistory(){
+        $data = ExamHistory::all();
+        return view('admin.examHistory', ['data'=>$data]);
+    }
+
+    public function export($qs_id){
+        return Excel::download(new ResultsExport($qs_id), 'result.xlsx');
+    }
+
+    public function sendMail($qs_id){
+        $data = ExamHistory::where('qs_id', $qs_id)->get();
+
+        foreach($data as $item){
+            $mailData = $item;          
+            Mail::to($mailData->student->email)->send(new ExamResultMail($mailData));
+        }
+        return redirect()->back()->with('success', 'Send Mail Successfully!');
     }
 }

@@ -134,7 +134,6 @@ class StudentController extends Controller
         return substr(str_shuffle($str_result),0, $length_of_string);
     }
 
-
     public function validateAccessCode(Request $request, $qs_id){
         $email = $request->email;
         $accessCode = $request->password;
@@ -144,7 +143,7 @@ class StudentController extends Controller
         if($validStudent){
             $studentID = Student::where('email', $email)->where('password', $accessCode)->first('id')->id;
 
-            $alreadyTook = ExamHistory::where('student_id', $studentID)->exists();
+            $alreadyTook = ExamHistory::where('student_id', $studentID)->where('qs_id', $qs_id)->exists();
             if($alreadyTook){
                 return view('students.login', ['qs_id'=>$qs_id])->with('errorMessage', 'You Already took this exam!');
             }

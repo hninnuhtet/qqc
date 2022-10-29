@@ -34,7 +34,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => '/admin/questions', 'as' => 
     Route::get('/{id}/delete', [QuestionController::class, 'destroy'])->name('delete');
     Route::delete('{qs_id}/{id}/deletequestion', [QuestionController::class, 'deletequestion'])->name('deletequestion');       
     Route::get('/changeStatus', [QuestionController::class, 'changeStatus'])->name('changeStatus');
-});
+    Route::get('/{id}/result', [QuestionController::class, 'result'])->name('result');
+    Route::get('/{id}/export', [QuestionController::class, 'export'])->name('export');
+    Route::get('/{id}/sendMail', [QuestionController::class, 'sendMail'])->name('sendMail');
+ });
 
 //Students
 Route::group(['middleware' => ['auth'], 'prefix' => '/admin/students', 'as' => 'admin.students.'], function () {
@@ -47,7 +50,11 @@ Route::group(['middleware' => ['auth'], 'prefix' => '/admin/students', 'as' => '
     Route::get('/{id}/delete', [StudentController::class, 'destroy'])->name('delete');   
 });
 
-//
+//ExamHistory
+Route::get('/admin/examHistory', [QuestionController::class, 'examHistory'])->name('admin.examHistory')->middleware('auth');
+
+//When Students answer question
 Route::get('/question/{qs_id}', [QuestionController::class, 'showQuestionLogin'])->name('question.showQuestionLogin')->middleware('validateQuestionSheetUrl');
 Route::post('/question/{qs_id}', [StudentController::class, 'validateAccessCode'])->name('question.validateAccessCode')->middleware('validateQuestionSheetUrl');
 Route::post('/question/handle_answers/{qs_id}', [QuestionController::class, 'handleAnswers'])->name('question.handleAnswers');
+

@@ -30,7 +30,7 @@
                 class="preloader flex-column justify-content-center align-items-center">
                 <img
                     class="animation__shake"
-                    src="{{asset('vendors/dist/img/QQClogo.png')}}"
+                    src="{{asset('vendors/dist/img/asking-questions.webp')}}"
                     alt="QQClogo"
                     height="60"
                     width="60"
@@ -48,23 +48,24 @@
                             ><i class="fas fa-bars"></i
                         ></a>
                     </li>
-                    <li class="nav-item d-none d-sm-inline-block">
+                    {{-- <li class="nav-item d-none d-sm-inline-block">
                         <a href="index3.html" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item d-none d-sm-inline-block">
                         <a href="#" class="nav-link">Contact</a>
-                    </li>
+                    </li> --}}
                 </ul>
 
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a
+                        {{-- <a
                             class="nav-link"
                             data-widget="navbar-search"
                             href="#"
                             role="button"
                         >
-                            <i class="fas fa-search"></i>
+                            <i class="fas fa-search"></i> --}}
+                        <a style="text-decoration: none; color: red; font-size:20px;" href="{{route('logout')}}"><i class="fa-solid fa-right-from-bracket"></i></a>
                         </a>
                         <div class="navbar-search-block">
                             <form class="form-inline">
@@ -102,7 +103,7 @@
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
                 <a href="#" class="brand-link">
                     <img
-                        src="{{asset('img/qqc_temp_logo.png')}}"
+                        src="{{asset('img/asking-questions.webp')}}"
                         alt="QQC Logo"
                         class="brand-image img-circle elevation-3"
                         style="opacity: 0.8"
@@ -142,15 +143,15 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item menu-open">
+                            {{-- <li class="nav-item menu-open">
                                 <a href="#" class="nav-link {{ (request()->is('admin/studentanswers*')) ? 'active' : '' }}">
                                     <i class="fa-solid fa-file-lines nav-icon"></i>
                                     <p>Student Answers</p>
                                 </a>
-                            </li>
+                            </li> --}}
 
                             <li class="nav-item menu-open">
-                                <a href="#" class="nav-link {{ (request()->is('admin/examhistories*')) ? 'active' : '' }}">
+                                <a href="{{route('admin.examHistory')}}" class="nav-link {{ (request()->is('admin/examHistory*')) ? 'active' : '' }}">
                                     <i class="fa-solid fa-book nav-icon"></i>
                                     <p>Exam Histories</p>
                                 </a>

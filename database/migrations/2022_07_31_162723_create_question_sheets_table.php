@@ -19,6 +19,7 @@ class CreateQuestionSheetsTable extends Migration
             $table->string('title');
             $table->string('description');
             $table->string('status');
+            $table->string('allowed_time');
             $table->string('created_by');
             $table->timestamps();
         });

@@ -14,7 +14,7 @@
                 <div class="col-sm-5">
                     <div class="card">
                         <div class="card-header">
-                            Question Info
+                            Add Student
                         </div>
                         <div class="card-body">
                             @if ($errors->any())

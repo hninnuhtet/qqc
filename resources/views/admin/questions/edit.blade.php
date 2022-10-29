@@ -54,12 +54,17 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label>Allowed Time (Minute)</label>
+                                <input type="digit" class="form-control" style="display: inline; width: 70px" name="qs_min" value="{{$allowed_time[0]}}">
+                                <input type="digit" class="form-control" style="display: inline; width: 70px" name="qs_sec" value="{{$allowed_time[1]}}">
+                            </div>
+                            <div class="form-group">
                                 <label>Created By</label>
                                 <input type="text" class="form-control" name="qs_created_by" value="{{$sheet->created_by}}">
                                 <small>e.g. Tr.Hnin</small>
                             </div>
-                            <button type="submit" class="btn btn-primary">Update</button>
-                            <a href="{{route('admin.questions.index')}}" class="btn btn-danger m-3">Cancel</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                            <a href="{{route('admin.questions.index')}}" class="btn btn-danger m-3 btn-sm">Cancel</a>
                         </div>
                     </div>
                 </div>

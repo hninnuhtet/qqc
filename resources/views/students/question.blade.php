@@ -61,7 +61,10 @@
         </style>
     </head>
     <body>
-        <form action="{{ route('question.handleAnswers', ['qs_id'=>$sheet->id]) }}" method="post">
+        <center>
+            <div class="time">Time left >> <span id="timer">{{$sheet->allowed_time}}</span></div>
+        </center>
+        <form action="{{ route('question.handleAnswers', ['qs_id'=>$sheet->id]) }}" method="post" id="form">
             @csrf
             <input type="text" hidden name="email" value="{{ $email }}">
             <input type="text" hidden name="accessCode" value="{{ $accessCode }}">
@@ -127,6 +130,31 @@
                         each.checked = false;
                     }
                 });
+            }
+
+            window.onload = function() {
+                startTimer();
+            };
+
+            function startTimer() {
+                var presentTime = document.getElementById('timer').innerHTML;
+                var timeArray = presentTime.split(/[:]+/);
+                var m = timeArray[0];
+                var s = checkSecond((timeArray[1] - 1));
+                if(s==59){m=m-1}
+                if(m==0 && s==0){
+                    document.getElementById("form").submit();
+                }
+                document.getElementById('timer').innerHTML =
+                m + ":" + s;
+                setTimeout(startTimer, 1000);
+            }
+
+            function checkSecond(sec) {
+                if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
+                if (sec < 0) {sec = "59"};
+                return sec;
+                //if(sec == 0 && m == 0){ alert('stop it')};
             }
         </script>
     </body>

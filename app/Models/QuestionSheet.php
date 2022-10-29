@@ -15,7 +15,7 @@ class QuestionSheet extends Model
 {
     use HasApiTokens, HasFactory, Notifiable, UuidTrait;
 
-    protected $fillable = ['id','code','title','description', 'status', 'created_by'];
+    protected $fillable = ['id','code','title','description', 'status', 'allowed_time', 'created_by'];
 
     public function question(){
         return $this->hasMany(Question::class);

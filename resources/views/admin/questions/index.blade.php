@@ -36,6 +36,7 @@
                         <th>Action</th>
                         <th>Status</th>
                         <th>Question Link</th>
+                        <th>Result</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -48,6 +49,7 @@
                         <th>Action</th>
                         <th>Status</th>
                         <th>Question Link</th>
+                        <th>Result</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -70,6 +72,9 @@
                                 <td>
                                     <input type="text" id="questionSheetLink{{$item->id}}" hidden value="{{url('http://127.0.0.1:8000/question/'.$item->id)}}" >
                                     <button class="btn btn-info btn-sm" onclick="copyToClipboard('{{$item->id}}')">Copy</button>
+                                </td>
+                                <td>
+                                    <a href="{{route('admin.questions.result', ['id' => $item->id])}}" class="btn btn-primary btn-sm">View Result</a>
                                 </td>
                             </tr>
                         @endforeach
