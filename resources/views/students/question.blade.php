@@ -133,16 +133,29 @@
             }
 
             window.onload = function() {
-                startTimer();
+                let qid = location.href.substring(location.href.lastIndexOf('/') + 1)
+
+                let settime = localStorage.getItem(qid)
+                startTimer(settime);
             };
 
-            function startTimer() {
-                var presentTime = document.getElementById('timer').innerHTML;
+            function startTimer(settime) {
+                let presentTime
+                if(settime){
+                    presentTime = settime
+                }else{
+                    presentTime = document.getElementById('timer').innerHTML;
+                }
+                let qid = location.href.substring(location.href.lastIndexOf('/') + 1)
+                console.log(' q id ', qid)
+                localStorage.setItem(qid, presentTime)
+
                 var timeArray = presentTime.split(/[:]+/);
                 var m = timeArray[0];
                 var s = checkSecond((timeArray[1] - 1));
                 if(s==59){m=m-1}
                 if(m==0 && s==0){
+                    localStorage.removeItem(qid, presentTime)
                     document.getElementById("form").submit();
                 }
                 document.getElementById('timer').innerHTML =

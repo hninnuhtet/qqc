@@ -279,9 +279,11 @@ class QuestionController extends Controller
                 'score'=>$score
             ]);
         }else{
-            return view('students.login', ['qs_id'=>$qs_id])->with('errorMessage', 'You Already took this exam!');
+            return redirect()->route('question.showQuestionLogin',  ['qs_id'=>$qs_id])->with('errorMessage', 'You Already took this exam!');
+            // return view('students.login', ['qs_id'=>$qs_id])->with('errorMessage', 'You Already took this exam!');
         }
-        return view('students.login', ['qs_id'=>$qs_id])->with('successMessage', 'Success!');
+        return redirect()->route('question.showQuestionLogin',  ['qs_id'=>$qs_id])->with('successMessage', 'Success!');
+        // return redirect('students.login', ['qs_id'=>$qs_id])->with('successMessage', 'Success!');
     }
 
     public function examHistory(){

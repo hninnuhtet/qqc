@@ -23,6 +23,13 @@
             <div class="login-logo">
                 <a><b>QQC</b>login</a>
             </div>
+            @if (Session::has('errorMessage'))
+            <div class="alert alert-danger" id="sessionMessage">{{ Session::get('errorMessage') }}</div>
+            @endif
+            @if (Session::has('successMessage'))
+            <div class="alert alert-success" id="sessionMessage">{{ Session::get('successMessage') }}</div>
+            @endif
+
             @if(!empty($errorMessage))
             <div class="alert alert-danger" id="sessionMessage"> {{ $errorMessage }}</div>
             @endif
