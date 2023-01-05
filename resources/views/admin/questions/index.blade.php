@@ -88,6 +88,7 @@
 <script>
     $(function() {
       $('.toggle-class').change(function() {
+        console.log('OK');
           var status = $(this).prop('checked') == true ? 1 : 0; 
           var qs_id = $(this).data('id'); 
           $.ajax({
